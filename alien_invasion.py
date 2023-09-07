@@ -1,4 +1,6 @@
 import sys, pygame
+from settings import Settings
+from ship import Ship
 
 
 class AlienInvasion:
@@ -7,13 +9,14 @@ class AlienInvasion:
     def __init__(self):
         pygame.init()
 
-        # custom :2 lines: getting screen size of monitor
-        self.screenInfoObject = pygame.display.Info()
-        self.x_height, self.y_width = (self.screenInfoObject.current_h,
-                                       self.screenInfoObject.current_w)
+        self.clock = pygame.time.Clock()
+        self.settings = Settings()
+        self.screen = pygame.display.set_mode((self.settings.screen_width,
+                                              self.settings.screen_height))
 
-        self.screen = pygame.display.set_mode((1200, 800))
         pygame.display.set_caption("Incredible Alien Invasion Game")
+        self.bg_color = (230, 230, 230)
+        self.ship = Ship(self)
 
     def run_game(self):
         """Start the main loop for the game"""
@@ -25,11 +28,15 @@ class AlienInvasion:
 
             # custom: 1 : try block to handle quitting game from keyboard
             try:
+                self.screen.fill(self.settings.bg_color)
+                self.ship.blitme()
                 # make the most recently drawn screen visible
                 pygame.display.flip()
-            except KeyboardInterrupt as kbInter:
-                print(f"\nKeyboard interrupt. Stopped running")
-                sys.exit(0)
+            except Exception as exp:
+                print(f"\nException Stopped running")
+                sys.exit(-1)
+            else:
+                self.clock.tick(60)
 
 
 if __name__ == '__main__':
@@ -37,4 +44,3 @@ if __name__ == '__main__':
     # custom: 1: try block
     ai = AlienInvasion()
     ai.run_game()
-
